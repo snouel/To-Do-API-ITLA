@@ -9,8 +9,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped(typeof(ITaskRepository<>), typeof (TaskRepository<>));
-builder.Services.AddScoped(typeof(ITaskService<>), typeof(TaskService<>));
+builder.Services.AddScoped(typeof(ITaskRepository), typeof (TaskRepository));
+builder.Services.AddScoped(typeof(ITaskService), typeof(TaskService));
 
 var app = builder.Build();
 
