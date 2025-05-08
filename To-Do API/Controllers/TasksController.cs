@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using To_Do_API.DTOs;
 using To_Do_API.Models;
-using To_Do_API.Repositories;
 using To_Do_API.Services;
+using To_Do_API.Helpers;
 
 namespace To_Do_API.Controllers
 {
@@ -22,6 +22,8 @@ namespace To_Do_API.Controllers
         public async Task<ActionResult<IEnumerable<TaskResponseDto>>> GetAll()
         {
             var tasks = await _taskService.GetAllAsync();
+
+            var pendingTasks = tasks.Where(t => t.Status == "Pending").ToList();
 
             var response = tasks.Select(t => new TaskResponseDto
             {
@@ -69,7 +71,18 @@ namespace To_Do_API.Controllers
                     Data = dto.Data
                 };
 
+                // Validate the task
+                if(!TaskDelegates.validate(task))
+                    return BadRequest(new {error = "La tarea no cumple con los parametros de validacion: La descripcion no puede estar vacia y/o la fecha de vencimiento no debe ser pasado." });
+
+                // Notify the creation
+                TaskDelegates.NotifyCreation(task);
+
                 var created = await _taskService.CreateAsync(task);
+
+                // Calculate the days left
+                var daysLeft = TaskDelegates.CalculateDayLeft(created);
+                Console.WriteLine($"Dias restantes: {daysLeft}");
 
                 var response = new TaskResponseDto
                 {
