@@ -29,3 +29,22 @@ dotnet restore
 
 4. Ejecutar la aplicación:
 La API estará disponible en https://localhost:5001 o http://localhost:5000 (según tu configuración).
+
+## Etapa 3: Patrones de Diseño - Fábrica (Factory)
+
+En esta etapa se implementó el patrón de diseño Factory para centralizar la creación de tareas con configuraciones predefinidas. Esto permite mantener la lógica de construcción de objetos en una sola clase reutilizable.
+
+Cambios realizados:
+Se creó la clase TasksFactory en la carpeta Factories/.
+
+Se implementaron los métodos:
+
+CreateHighPriorityTask: crea una tarea con vencimiento de 1 día y prioridad alta.
+
+CreateLowPriorityTask: crea una tarea con vencimiento de 7 días y prioridad baja.
+
+CreateCustomTask: permite construir una tarea con parámetros personalizados.
+
+Se crearon los endpoints POST /api/tasks/customizable-task, /api/tasks/high-priority, /api/tasks/low-priority  que usa la fábrica para construir tareas de diferente tipos.
+
+Esta implementación mejora la modularidad y escalabilidad de la API, permitiendo agregar fácilmente nuevos tipos de tareas sin duplicar lógica en el controlador.
