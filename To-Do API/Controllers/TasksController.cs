@@ -3,6 +3,7 @@ using To_Do_API.DTOs;
 using To_Do_API.Models;
 using To_Do_API.Services;
 using To_Do_API.Helpers;
+using To_Do_API.Factories;
 
 namespace To_Do_API.Controllers
 {
@@ -103,12 +104,12 @@ namespace To_Do_API.Controllers
 
         //PUT: api/tasks/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, UpdateTaskDto dto) 
+        public async Task<ActionResult> Update(int id, UpdateTaskDto dto)
         {
             var existing = await _taskService.GetByIdAsync(id);
-            if(existing == null)
+            if (existing == null)
                 return NotFound();
-            
+
             existing.Description = dto.Description;
             existing.DueDate = dto.DueDate;
             existing.Status = dto.Status;
@@ -119,18 +120,74 @@ namespace To_Do_API.Controllers
                 return BadRequest();
 
             return NoContent();
-           
+
         }
 
         //DELETE: api/tasks/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id) 
+        public async Task<IActionResult> Delete(int id)
         {
             var result = await _taskService.DeleteAsync(id);
             if (!result)
                 return NotFound();
 
             return NoContent();
+        }
+
+        [HttpPost("customizable-task")]
+        public async Task<ActionResult<TaskResponseDto>> CreateCustomTask([FromBody] string description, DateTime dueDate, string status, string data)
+        {
+            var task = TasksFactory.CreatePersonalizableTask(description, dueDate, status, data);
+            var created = await _taskService.CreateAsync(task);
+
+            var response = new TaskResponseDto
+            {
+                Id = created.Id,
+                Description = created.Description,
+                DueDate = created.DueDate,
+                Status = created.Status,
+                Data = created.Data,
+            };
+            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+        }
+
+
+        [HttpPost("high-priority")]
+        public async Task<ActionResult<TaskResponseDto>> CreateHighPriority([FromBody] string description) 
+        { 
+            var task = TasksFactory.CreateHighPriorityTask(description);
+            var created = await _taskService.CreateAsync(task);
+
+            var response = new TaskResponseDto
+            {
+                Id = created.Id,
+                Description = created.Description,
+                DueDate = created.DueDate,
+                Status = created.Status,
+                Data = created.Data,
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+
+        }
+
+        [HttpPost("low-priority")]
+        public async Task<ActionResult<TaskResponseDto>> CreateLowPriority([FromBody] string description)
+        {
+            var task = TasksFactory.CreateLowPriorityTask(description);
+            var created = await _taskService.CreateAsync(task);
+
+            var response = new TaskResponseDto
+            {
+                Id = created.Id,
+                Description = created.Description,
+                DueDate = created.DueDate,
+                Status = created.Status,
+                Data = created.Data,
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+
         }
     }
 }
