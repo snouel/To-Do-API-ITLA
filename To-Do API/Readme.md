@@ -29,3 +29,14 @@ dotnet restore
 
 4. Ejecutar la aplicación:
 La API estará disponible en https://localhost:5001 o http://localhost:5000 (según tu configuración).
+
+## Etapa 2: Delegados, Funciones Anónimas, Action y Func
+
+En esta etapa se integraron mecanismos que hacen la lógica de negocio más flexible y reutilizable mediante el uso de:
+
+- **Delegado personalizado `ValidateTask`** para validar tareas antes de crearlas (verifica que la descripción no esté vacía y la fecha de vencimiento sea válida).
+- **`Action<TodoTask<string>>`** para notificar automáticamente en consola cada vez que se crea una nueva tarea.
+- **`Func<TodoTask<string>, int>`** para calcular y mostrar los días restantes hasta la fecha de vencimiento.
+- **Funciones anónimas con LINQ** para filtrar dinámicamente tareas pendientes desde el controlador.
+
+Estas implementaciones se integraron directamente en el `TasksController`, haciendo la lógica más limpia, reutilizable y extensible sin modificar métodos existentes.
