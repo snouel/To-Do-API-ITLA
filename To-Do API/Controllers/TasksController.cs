@@ -12,10 +12,11 @@ namespace To_Do_API.Controllers
     public class TasksController : ControllerBase
     {
         private readonly ITaskService _taskService;
-
-        public TasksController(ITaskService taskService)
+        private readonly TaskQueueHandler _taskQueueHandler;
+        public TasksController(ITaskService taskService, TaskQueueHandler taskQueueHandler)
         {
             _taskService = taskService;
+            _taskQueueHandler = taskQueueHandler;
         }
 
         //GET: api/tasks
@@ -80,6 +81,7 @@ namespace To_Do_API.Controllers
                 TaskDelegates.NotifyCreation(task);
 
                 var created = await _taskService.CreateAsync(task);
+                _taskQueueHandler.Enqueue(created);
 
                 // Calculate the days left
                 var daysLeft = TaskDelegates.CalculateDayLeft(created);
@@ -140,6 +142,8 @@ namespace To_Do_API.Controllers
             var task = TasksFactory.CreatePersonalizableTask(description, dueDate, status, data);
             var created = await _taskService.CreateAsync(task);
 
+            _taskQueueHandler.Enqueue(created);
+
             var response = new TaskResponseDto
             {
                 Id = created.Id,
@@ -157,6 +161,8 @@ namespace To_Do_API.Controllers
         { 
             var task = TasksFactory.CreateHighPriorityTask(description);
             var created = await _taskService.CreateAsync(task);
+
+            _taskQueueHandler.Enqueue(created);
 
             var response = new TaskResponseDto
             {
@@ -176,6 +182,8 @@ namespace To_Do_API.Controllers
         {
             var task = TasksFactory.CreateLowPriorityTask(description);
             var created = await _taskService.CreateAsync(task);
+
+            _taskQueueHandler.Enqueue(created);
 
             var response = new TaskResponseDto
             {
