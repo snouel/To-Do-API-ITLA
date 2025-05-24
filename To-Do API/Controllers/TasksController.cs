@@ -77,11 +77,11 @@ namespace To_Do_API.Controllers
                 if(!TaskDelegates.validate(task))
                     return BadRequest(new {error = "La tarea no cumple con los parametros de validacion: La descripcion no puede estar vacia y/o la fecha de vencimiento no debe ser pasado." });
 
-                // Notify the creation
-                TaskDelegates.NotifyCreation(task);
-
+                _taskQueueHandler.Enqueue(task);
                 var created = await _taskService.CreateAsync(task);
-                _taskQueueHandler.Enqueue(created);
+
+                // Notify the creation
+                TaskDelegates.NotifyCreation(created);
 
                 // Calculate the days left
                 var daysLeft = TaskDelegates.CalculateDayLeft(created);
@@ -140,9 +140,9 @@ namespace To_Do_API.Controllers
         public async Task<ActionResult<TaskResponseDto>> CreateCustomTask([FromBody] string description, DateTime dueDate, string status, string data)
         {
             var task = TasksFactory.CreatePersonalizableTask(description, dueDate, status, data);
+            _taskQueueHandler.Enqueue(task);
             var created = await _taskService.CreateAsync(task);
 
-            _taskQueueHandler.Enqueue(created);
 
             var response = new TaskResponseDto
             {
@@ -160,9 +160,9 @@ namespace To_Do_API.Controllers
         public async Task<ActionResult<TaskResponseDto>> CreateHighPriority([FromBody] string description) 
         { 
             var task = TasksFactory.CreateHighPriorityTask(description);
-            var created = await _taskService.CreateAsync(task);
 
-            _taskQueueHandler.Enqueue(created);
+            _taskQueueHandler.Enqueue(task);
+            var created = await _taskService.CreateAsync(task);
 
             var response = new TaskResponseDto
             {
@@ -181,9 +181,9 @@ namespace To_Do_API.Controllers
         public async Task<ActionResult<TaskResponseDto>> CreateLowPriority([FromBody] string description)
         {
             var task = TasksFactory.CreateLowPriorityTask(description);
+            _taskQueueHandler.Enqueue(task);
             var created = await _taskService.CreateAsync(task);
 
-            _taskQueueHandler.Enqueue(created);
 
             var response = new TaskResponseDto
             {
