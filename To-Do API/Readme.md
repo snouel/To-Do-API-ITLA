@@ -60,3 +60,35 @@ CreateCustomTask: permite construir una tarea con parámetros personalizados.
 Se crearon los endpoints POST /api/tasks/customizable-task, /api/tasks/high-priority, /api/tasks/low-priority  que usa la fábrica para construir tareas de diferente tipos.
 
 Esta implementación mejora la modularidad y escalabilidad de la API, permitiendo agregar fácilmente nuevos tipos de tareas sin duplicar lógica en el controlador.
+
+##  Etapa 4: Programación Reactiva con Rx.NET y Cola Secuencial
+
+En esta etapa se implementó una **cola FIFO** utilizando `Queue<T>` y `Rx.NET` para procesar tareas de forma secuencial, asegurando que **solo una tarea se procese a la vez** y que la siguiente espere hasta que la anterior esté completada.
+
+###  Cambios realizados:
+
+- Se creó la clase `TaskQueueHandler` como `Singleton`.
+- Se implementó una cola (`ConcurrentQueue<TodoTask<string>>`) para almacenar tareas en espera.
+- Se utilizó `Observable.Start()` de Rx.NET para simular el procesamiento asíncrono de cada tarea.
+- El procesamiento de cada tarea incluye:
+  - Estado inicial `"Pending"`
+  - Simulación de ejecución con `await Task.Delay(...)`
+  - Estado final `"Completed"`
+- Las tareas se procesan en el mismo orden en que fueron agregadas (First In, First Out).
+
+### Consideraciones técnicas:
+
+- `TaskQueueHandler` se registró como `Singleton` para mantener una cola global.
+- El repositorio (`TaskRepository`) también se registró como `Singleton` para conservar el estado de las tareas en memoria entre requests.
+- El servicio (`TaskService`) se mantiene como `Scoped`.
+
+### Cómo probarlo:
+
+1. Realiza múltiples llamadas `POST` para crear tareas.
+2. Cada tarea será encolada y procesada una por una.
+3. En consola se mostrará:
+
+	Procesando tarea: Tarea 1
+	Completada: Tarea 1
+	Procesando tarea: Tarea 2
+	Completada: Tarea 2

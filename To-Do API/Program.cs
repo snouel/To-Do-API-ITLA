@@ -9,8 +9,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped(typeof(ITaskRepository), typeof (TaskRepository));
+builder.Services.AddSingleton(typeof(ITaskRepository), typeof (TaskRepository)); //Al trabajar con datos en memoria no iniciara una nueva instancia.
 builder.Services.AddScoped(typeof(ITaskService), typeof(TaskService));
+builder.Services.AddSingleton<TaskQueueHandler>();
+
 
 var app = builder.Build();
 
