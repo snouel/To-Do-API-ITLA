@@ -77,23 +77,18 @@ namespace To_Do_API.Controllers
                 if(!TaskDelegates.validate(task))
                     return BadRequest(new {error = "La tarea no cumple con los parametros de validacion: La descripcion no puede estar vacia y/o la fecha de vencimiento no debe ser pasado." });
 
+                //Enqueue the task for processing
                 _taskQueueHandler.Enqueue(task);
-                var created = await _taskService.CreateAsync(task);
 
-                // Notify the creation
-                TaskDelegates.NotifyCreation(created);
-
-                // Calculate the days left
-                var daysLeft = TaskDelegates.CalculateDayLeft(created);
-                Console.WriteLine($"Dias restantes: {daysLeft}");
+               
 
                 var response = new TaskResponseDto
                 {
-                    Id = created.Id,
-                    Description = created.Description,
-                    DueDate = created.DueDate,
-                    Status = created.Status,
-                    Data = created.Data
+                    Id = task.Id,
+                    Description = task.Description,
+                    DueDate = task.DueDate,
+                    Status = task.Status,
+                    Data = task.Data
                 };
 
                 return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
@@ -140,17 +135,18 @@ namespace To_Do_API.Controllers
         public async Task<ActionResult<TaskResponseDto>> CreateCustomTask([FromBody] string description, DateTime dueDate, string status, string data)
         {
             var task = TasksFactory.CreatePersonalizableTask(description, dueDate, status, data);
+
+            //Enqueue the task for processing
             _taskQueueHandler.Enqueue(task);
-            var created = await _taskService.CreateAsync(task);
 
 
             var response = new TaskResponseDto
             {
-                Id = created.Id,
-                Description = created.Description,
-                DueDate = created.DueDate,
-                Status = created.Status,
-                Data = created.Data,
+                Id = task.Id,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Status = task.Status,
+                Data = task.Data,
             };
             return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
         }
@@ -161,16 +157,16 @@ namespace To_Do_API.Controllers
         { 
             var task = TasksFactory.CreateHighPriorityTask(description);
 
+            //Enqueue the task for processing
             _taskQueueHandler.Enqueue(task);
-            var created = await _taskService.CreateAsync(task);
 
             var response = new TaskResponseDto
             {
-                Id = created.Id,
-                Description = created.Description,
-                DueDate = created.DueDate,
-                Status = created.Status,
-                Data = created.Data,
+                Id = task.Id,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Status = task.Status,
+                Data = task.Data,
             };
 
             return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
@@ -181,17 +177,16 @@ namespace To_Do_API.Controllers
         public async Task<ActionResult<TaskResponseDto>> CreateLowPriority([FromBody] string description)
         {
             var task = TasksFactory.CreateLowPriorityTask(description);
+
+            //Enqueue the task for processing
             _taskQueueHandler.Enqueue(task);
-            var created = await _taskService.CreateAsync(task);
-
-
             var response = new TaskResponseDto
             {
-                Id = created.Id,
-                Description = created.Description,
-                DueDate = created.DueDate,
-                Status = created.Status,
-                Data = created.Data,
+                Id = task.Id,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Status = task.Status,
+                Data = task.Data,
             };
 
             return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
