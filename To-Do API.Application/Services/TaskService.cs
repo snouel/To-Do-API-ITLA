@@ -1,7 +1,7 @@
-﻿using To_Do_API.Models;
-using To_Do_API.Repositories;
+﻿using To_Do_API.Domain.Entities;
+using To_Do_API.Domain.Interfaces;
 
-namespace To_Do_API.Services
+namespace To_Do_API.Application.Services
 {
     public class TaskService : ITaskService
     {

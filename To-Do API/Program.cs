@@ -1,5 +1,6 @@
-using To_Do_API.Repositories;
-using To_Do_API.Services;
+using To_Do_API.Infraestructure.Repositories;
+using To_Do_API.Application.Services;
+using To_Do_API.Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

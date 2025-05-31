@@ -1,8 +1,9 @@
 ﻿
 
-using To_Do_API.Models;
+using To_Do_API.Domain.Entities;
+using To_Do_API.Domain.Interfaces;
 
-namespace To_Do_API.Repositories
+namespace To_Do_API.Infraestructure.Repositories
 {
     public class TaskRepository : ITaskRepository
     {

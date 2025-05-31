@@ -1,9 +1,14 @@
-﻿using To_Do_API.Models;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Reactive.Linq;
-using To_Do_API.Helpers;
+using Microsoft.Extensions.DependencyInjection;
+using To_Do_API.Domain.Interfaces;
+using To_Do_API.Domain.Entities;
+using To_Do_API.Domain.Delegates;
 
-namespace To_Do_API.Services
+
+
+
+namespace To_Do_API.Application.Services
 {
     public class TaskQueueHandler
     {

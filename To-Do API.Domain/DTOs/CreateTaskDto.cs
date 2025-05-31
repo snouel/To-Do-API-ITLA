@@ -1,6 +1,6 @@
-﻿namespace To_Do_API.DTOs
+﻿namespace To_Do_API.Domain.DTOs
 {
-    public class UpdateTaskDto
+    public class CreateTaskDto
     {
         public string Description { get; set; } = string.Empty;
         public DateTime DueDate { get; set; }

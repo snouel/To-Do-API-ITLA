@@ -1,6 +1,6 @@
-﻿using To_Do_API.Models;
+﻿using To_Do_API.Domain.Entities;
 
-namespace To_Do_API.Services
+namespace To_Do_API.Domain.Interfaces
 {
     public interface ITaskService
     {
