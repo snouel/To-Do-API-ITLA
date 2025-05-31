@@ -58,6 +58,21 @@ namespace To_Do_API.Controllers
             return Ok(response);
         }
 
+        //Get: api/tasks/completionrate
+        [HttpGet("completionrate")]
+        public async Task<ActionResult<double>> GetCompletionRate()
+        {
+            var tasks = await _taskService.GetAllAsync();
+
+            if (!tasks.Any())
+                return BadRequest(new { error = "No hay tareas disponibles para calcular la tasa de finalización." });
+
+            var completedTasks = tasks.Count(t => t.Status == "Completed");
+            var totalTasks = tasks.ToList().Count;
+            return  MemoizationHelper.CalculateCompletionPercentage(completedTasks, totalTasks);
+
+        }
+
         //POST: api/tasks
         [HttpPost]
         public async Task<ActionResult<TaskResponseDto>> Create(CreateTaskDto dto)
