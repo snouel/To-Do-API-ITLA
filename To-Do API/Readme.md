@@ -92,3 +92,29 @@ En esta etapa se implementó una **cola FIFO** utilizando `Queue<T>` y `Rx.NET` p
 	Completada: Tarea 1
 	Procesando tarea: Tarea 2
 	Completada: Tarea 2
+
+##   Etapa 5 - Optimización con Memoization
+
+En esta etapa se implementó la técnica de memoization (memorización) para optimizar funciones repetitivas y costosas dentro de la API, con el objetivo de mejorar el rendimiento general y evitar cálculos innecesarios.
+
+Funcionalidad implementada:
+
+	- Se creó una función pura para calcular el porcentaje de tareas completadas.
+
+	- Se utilizó un Dictionary<string, double> como caché para almacenar los resultados de esos cálculos.
+
+	- Se encapsuló esta lógica en una clase estática MemoizationHelper.
+
+	- Se generó una clave única (key) para cada conjunto de entradas, y si ya existía en caché, se devolvió el valor almacenado.
+
+
+Archivos clave: 
+
+	- Helpers/MemoizationHelper.cs: gestiona la caché de resultados.
+
+	- Controller/TaskController.cs: utiliza memoization con MemoizationHelper.CalculateCompletionPercentage(completedTasks, totalTasks);
+
+
+
+
+
