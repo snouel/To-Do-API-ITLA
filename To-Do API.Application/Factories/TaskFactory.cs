@@ -1,6 +1,6 @@
-﻿using To_Do_API.Models;
+﻿using To_Do_API.Domain.Entities;
 
-namespace To_Do_API.Factories
+namespace To_Do_API.Application.Factories
 {
     public class TasksFactory
     {

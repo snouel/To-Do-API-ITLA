@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using To_Do_API.DTOs;
-using To_Do_API.Models;
-using To_Do_API.Services;
-using To_Do_API.Helpers;
-using To_Do_API.Factories;
+using To_Do_API.Domain.DTOs;
+using To_Do_API.Domain.Entities;
+using To_Do_API.Domain.Delegates;
+using To_Do_API.Domain.Interfaces;
+using To_Do_API.Application.Factories;
+using To_Do_API.Application.Helpers;
+using To_Do_API.Application.Services;
+
 
 namespace To_Do_API.Controllers
 {

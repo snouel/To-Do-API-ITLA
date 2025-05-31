@@ -1,4 +1,4 @@
-﻿namespace To_Do_API.DTOs
+﻿namespace To_Do_API.Domain.DTOs
 {
     public class TaskResponseDto
     {

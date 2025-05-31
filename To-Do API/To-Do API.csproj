@@ -12,4 +12,10 @@
     <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\To-Do API.Application\To-Do API.Application.csproj" />
+    <ProjectReference Include="..\To-Do API.Domain\To-Do API.Domain.csproj" />
+    <ProjectReference Include="..\To-Do API.Insfraestructure\To-Do API.Insfraestructure.csproj" />
+  </ItemGroup>
+
 </Project>

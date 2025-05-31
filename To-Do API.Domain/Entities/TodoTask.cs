@@ -1,4 +1,4 @@
-﻿namespace To_Do_API.Models
+﻿namespace To_Do_API.Domain.Entities
 {
     public class TodoTask<T>
     {
