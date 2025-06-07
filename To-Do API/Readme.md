@@ -115,6 +115,70 @@ Archivos clave:
 	- Controller/TaskController.cs: utiliza memoization con MemoizationHelper.CalculateCompletionPercentage(completedTasks, totalTasks);
 
 
+## Etapa 6 – Autenticación y Autorización con JWT
+
+Objetivo
+
+Implementar un sistema de autenticación basado en JSON Web Tokens (JWT) para controlar el acceso a los recursos de la API. Este mecanismo permite validar la identidad del usuario y aplicar control de acceso por roles, sin almacenar sesiones en el servidor.
+
+Cambios implementados: 
+
+	-  1. Entidades y DTOs
+
+		User: nueva entidad con Id, Username, Password, Role, CreatedAt, UpdatedAt.
+
+		LogUserDTO: para login (email y password).
+
+		RegisterUserDTO: para registrar usuarios.
+
+	- 2. Repositorio de usuarios
+
+		IUserRepository: interfaz para gestionar usuarios.
+
+		IUserRepository: implementación en memoria (ConcurrentDictionary con ID autoincrementable).
+
+	- 3. Servicio de autenticación (AuthService)
+
+		Método RegisterAsync: valida y registra nuevos usuarios.
+
+		Método AuthenticateAsync: valida credenciales, genera y firma un JWT.
+
+		El JWT incluye: email y Jti (ID único por token).
+
+		Firma con clave secreta usando HMAC-SHA256.
+
+	4. Controlador AuthController
+
+		POST /api/auth/register: permite registrar un nuevo usuario.
+
+		POST /api/auth/login: valida credenciales y retorna un token JWT.
+
+	5. Seguridad en la API
+		Middleware configurado con AddAuthentication y AddAuthorization.
+
+	Tokens protegidos mediante Authorization: Bearer <token>.
+
+	Endpoints protegidos con [Authorize].
+
+Flujo de autenticación
+
+	El cliente se registra con /api/auth/register.
+
+	Luego inicia sesión con /api/auth/login y recibe un token.
+
+	El cliente envía el token en cada request (Authorization: Bearer).
+
+	La API valida el token automáticamente antes de procesar la solicitud.
+
+## Resultado
+La API ahora está protegida con un sistema JWT funcional que:
+
+Genera tokens únicos por sesión.
+
+Controla el acceso a endpoints por autenticación y rol.
+
+No requiere almacenamiento de sesión en el servidor.
+
 
 
 

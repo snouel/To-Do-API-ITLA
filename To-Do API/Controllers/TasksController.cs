@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using To_Do_API.Domain.DTOs;
 using To_Do_API.Domain.Entities;
 using To_Do_API.Domain.Delegates;
-using To_Do_API.Domain.Interfaces;
 using To_Do_API.Application.Factories;
 using To_Do_API.Application.Helpers;
 using To_Do_API.Application.Services;
+using To_Do_API.Domain.DTOs.TaskDTOs;
+using To_Do_API.Domain.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using To_Do_API.Domain.Interfaces.TodoTasks;
 
 
 namespace To_Do_API.Controllers
@@ -23,6 +25,7 @@ namespace To_Do_API.Controllers
         }
 
         //GET: api/tasks
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskResponseDto>>> GetAll()
         {
@@ -42,6 +45,7 @@ namespace To_Do_API.Controllers
         }
 
         //Get: api/tasks/{id}
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskResponseDto>> GetById(int id)
         {
@@ -62,6 +66,7 @@ namespace To_Do_API.Controllers
         }
 
         //Get: api/tasks/completionrate
+        [Authorize]
         [HttpGet("completionrate")]
         public async Task<ActionResult<double>> GetCompletionRate()
         {
@@ -77,6 +82,7 @@ namespace To_Do_API.Controllers
         }
 
         //POST: api/tasks
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<TaskResponseDto>> Create(CreateTaskDto dto)
         {
@@ -118,6 +124,7 @@ namespace To_Do_API.Controllers
         }
 
         //PUT: api/tasks/{id}
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, UpdateTaskDto dto)
         {
@@ -139,6 +146,7 @@ namespace To_Do_API.Controllers
         }
 
         //DELETE: api/tasks/{id}
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -149,6 +157,7 @@ namespace To_Do_API.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPost("customizable-task")]
         public async Task<ActionResult<TaskResponseDto>> CreateCustomTask([FromBody] string description, DateTime dueDate, string status, string data)
         {
@@ -169,7 +178,7 @@ namespace To_Do_API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
         }
 
-
+        [Authorize]
         [HttpPost("high-priority")]
         public async Task<ActionResult<TaskResponseDto>> CreateHighPriority([FromBody] string description) 
         { 
@@ -191,6 +200,7 @@ namespace To_Do_API.Controllers
 
         }
 
+        [Authorize]
         [HttpPost("low-priority")]
         public async Task<ActionResult<TaskResponseDto>> CreateLowPriority([FromBody] string description)
         {
