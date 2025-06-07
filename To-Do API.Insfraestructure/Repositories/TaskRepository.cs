@@ -1,7 +1,7 @@
 ﻿
 
 using To_Do_API.Domain.Entities;
-using To_Do_API.Domain.Interfaces;
+using To_Do_API.Domain.Interfaces.TodoTasks;
 
 namespace To_Do_API.Infraestructure.Repositories
 {
