@@ -32,7 +32,6 @@ namespace To_Do_API.Infraestructure.Repositories
                     Data = "Trabajo"
                 }
             });
-            // Establecer el siguiente ID evitando conflicto
             _nextId = _tasks.Max(t => t.Id) + 1;
         }
 

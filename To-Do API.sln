@@ -11,6 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "To-Do API.Insfraestructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "To-Do API.Application", "To-Do API.Application\To-Do API.Application.csproj", "{4916520C-AA32-440B-9D1F-8FBA72049640}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentacion", "Documentacion", "{5077BCBE-A703-483D-8690-47AC05BBA82B}"
+	ProjectSection(SolutionItems) = preProject
+		Client-Side SignalR Connection.cs = Client-Side SignalR Connection.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -8,6 +8,8 @@ using To_Do_API.Domain.DTOs.TaskDTOs;
 using To_Do_API.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using To_Do_API.Domain.Interfaces.TodoTasks;
+using To_Do_API.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 
 namespace To_Do_API.Controllers
@@ -18,10 +20,13 @@ namespace To_Do_API.Controllers
     {
         private readonly ITaskService _taskService;
         private readonly TaskQueueHandler _taskQueueHandler;
-        public TasksController(ITaskService taskService, TaskQueueHandler taskQueueHandler)
+        private readonly IHubContext<TasksHub> _taskCreationHub;
+
+        public TasksController(ITaskService taskService, TaskQueueHandler taskQueueHandler, IHubContext<TasksHub> taskCreationHub)
         {
             _taskService = taskService;
             _taskQueueHandler = taskQueueHandler;
+            _taskCreationHub  = taskCreationHub;
         }
 
         //GET: api/tasks
@@ -104,8 +109,6 @@ namespace To_Do_API.Controllers
                 //Enqueue the task for processing
                 _taskQueueHandler.Enqueue(task);
 
-               
-
                 var response = new TaskResponseDto
                 {
                     Id = task.Id,
@@ -114,6 +117,9 @@ namespace To_Do_API.Controllers
                     Status = task.Status,
                     Data = task.Data
                 };
+
+
+                await _taskCreationHub.Clients.All.SendAsync("TaskCreated", response);
 
                 return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
             }
