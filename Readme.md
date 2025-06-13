@@ -206,9 +206,11 @@ No requiere almacenamiento de sesi�n en el servidor.
 		Esto notifica a todos los clientes conectados que una nueva tarea fue creada.
 
 		4. Cliente de prueba
-		Se desarrolló un cliente SignalR (HTML o consola .NET) que se conecta a /taskHub y escucha el evento TaskCreated.
+
+		Se desarrolló un cliente SignalR en consola .NET que se conecta a /taskHub y escucha el evento TaskCreated, este fue agregado a la carpeta de /Documentacion con el fin de mostrar como se realiza la conexion y no para ser utilizado en produccion PD: El cliente fue testeado en un proyecto aparte.
 
 		El cliente ejecuta una acción automática cuando recibe la notificación, como mostrar la tarea por consola.
+
 
 	Flujo de comunicación
 
