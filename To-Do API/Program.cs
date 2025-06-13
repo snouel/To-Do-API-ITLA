@@ -7,6 +7,7 @@ using To_Do_API.Domain.Interfaces.Auth;
 using To_Do_API.Domain.Interfaces.TodoTasks;
 using To_Do_API.Domain.Interfaces.Users;
 using To_Do_API.Insfraestructure.Repositories;
+using To_Do_API.Hubs;
 
 
 
@@ -23,6 +24,7 @@ builder.Services.AddScoped(typeof(ITaskService), typeof(TaskService));
 builder.Services.AddSingleton<TaskQueueHandler>();
 builder.Services.AddSingleton(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddSignalR();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -52,9 +54,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+app.MapHub<TasksHub>("/taskHub");
 
 app.Run();
