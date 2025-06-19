@@ -51,11 +51,11 @@ namespace To_Do_API.Application.Services
 
         }
 
-        public Task<bool> RegisterAsync(RegisterUserDTO dto)
+        public async Task<bool> RegisterAsync(RegisterUserDTO dto)
         {
-            var existingUser = _userRepository.GetUserByIdAsync(dto.Email);
-            if (existingUser.Result != null)
-                return Task.FromResult(false);
+            var existingUser = await _userRepository.GetUserByIdAsync(dto.Email);
+            if (existingUser != null)
+                return false;
 
             var user = new User
             {
@@ -65,7 +65,7 @@ namespace To_Do_API.Application.Services
                 CreatedAt = DateTime.UtcNow,
             };
 
-            return _userRepository.AddUserAsync(user);
+            return await _userRepository.AddUserAsync(user);
 
         }
     }
