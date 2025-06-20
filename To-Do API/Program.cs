@@ -8,6 +8,7 @@ using To_Do_API.Domain.Interfaces.TodoTasks;
 using To_Do_API.Domain.Interfaces.Users;
 using To_Do_API.Insfraestructure.Repositories;
 using To_Do_API.Hubs;
+using To_Do_API.Application.Settings;
 
 
 
@@ -25,6 +26,10 @@ builder.Services.AddSingleton<TaskQueueHandler>();
 builder.Services.AddSingleton(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSignalR();
+
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("JwtSettings"));
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
