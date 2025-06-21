@@ -1,13 +1,13 @@
 # To-DoAPI
 
-## Descripci�n
-To-Do es una Web API desarrollada en .NET 8 que permite gestionar tareas de manera flexible, utilizando un modelo gen�rico. Se pueden realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre tareas, garantizando validaciones y manejo adecuado de excepciones.
+## Descripción
+To-Do es una Web API desarrollada en .NET 8 que permite gestionar tareas de manera flexible, utilizando un modelo genérico. Se pueden realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre tareas, garantizando validaciones y manejo adecuado de excepciones.
 
-## Tecnolog�as utilizadas
+## Tecnologías utilizadas
 - C#
 - ASP.NET Core Web API
 - .NET 8
-- Programaci�n as�ncrona (async/await)
+- Programación asíncrona (async/await)
 
 ## Funcionalidades principales
 - Crear nuevas tareas con diferentes tipos de datos asociados.
@@ -16,254 +16,221 @@ To-Do es una Web API desarrollada en .NET 8 que permite gestionar tareas de mane
 - Eliminar tareas innecesarias.
 - Manejo global de excepciones y respuestas estructuradas.
 
-## C�mo ejecutar el proyecto
+## Cómo ejecutar el proyecto
 1. Clonar el repositorio:
-   ```bash
-   git clone https://github.com/snouel/To-Do-API-ITLA.git
+```bash
+git clone https://github.com/snouel/To-Do-API-ITLA.git
+````
 
 2. Navegar a la carpeta del proyecto:
+
+```bash
 cd To-Do-API-ITLA/To-DoAPI
+```
 
-3.Restaurar los paquetes:
+3. Restaurar los paquetes:
+
+```bash
 dotnet restore
+```
 
-4. Ejecutar la aplicaci�n:
-La API estar� disponible en https://localhost:5001 o http://localhost:5000 (seg�n tu configuraci�n).
+4. Ejecutar la aplicación:
+   La API estará disponible en [https://localhost:5001](https://localhost:5001) o [http://localhost:5000](http://localhost:5000) (según tu configuración).
 
-## Etapa 2: Delegados, Funciones An�nimas, Action y Func
+---
 
-En esta etapa se integraron mecanismos que hacen la l�gica de negocio m�s flexible y reutilizable mediante el uso de:
+## Etapa 2: Delegados, Funciones Anónimas, Action y Func
 
-- **Delegado personalizado `ValidateTask`** para validar tareas antes de crearlas (verifica que la descripci�n no est� vac�a y la fecha de vencimiento sea v�lida).
-- **`Action<TodoTask<string>>`** para notificar autom�ticamente en consola cada vez que se crea una nueva tarea.
-- **`Func<TodoTask<string>, int>`** para calcular y mostrar los d�as restantes hasta la fecha de vencimiento.
-- **Funciones an�nimas con LINQ** para filtrar din�micamente tareas pendientes desde el controlador.
+En esta etapa se integraron mecanismos que hacen la lógica de negocio más flexible y reutilizable mediante el uso de:
 
-Estas implementaciones se integraron directamente en el `TasksController`, haciendo la l�gica m�s limpia, reutilizable y extensible sin modificar m�todos existentes.
-La API estar� disponible en https://localhost:5001 o http://localhost:5000 (seg�n tu configuraci�n).
+* **Delegado personalizado `ValidateTask`** para validar tareas antes de crearlas (verifica que la descripción no esté vacía y la fecha de vencimiento sea válida).
+* **`Action<TodoTask<string>>`** para notificar automáticamente en consola cada vez que se crea una nueva tarea.
+* **`Func<TodoTask<string>, int>`** para calcular y mostrar los días restantes hasta la fecha de vencimiento.
+* **Funciones anónimas con LINQ** para filtrar dinámicamente tareas pendientes desde el controlador.
 
-## Etapa 3: Patrones de Dise�o - F�brica (Factory)
+Estas implementaciones se integraron directamente en el `TasksController`, haciendo la lógica más limpia, reutilizable y extensible sin modificar métodos existentes.
 
-En esta etapa se implement� el patr�n de dise�o Factory para centralizar la creaci�n de tareas con configuraciones predefinidas. Esto permite mantener la l�gica de construcci�n de objetos en una sola clase reutilizable.
+---
 
-Cambios realizados:
-Se cre� la clase TasksFactory en la carpeta Factories/.
+## Etapa 3: Patrones de Diseño - Fábrica (Factory)
 
-Se implementaron los m�todos:
+En esta etapa se implementó el patrón de diseño Factory para centralizar la creación de tareas con configuraciones predefinidas. Esto permite mantener la lógica de construcción de objetos en una sola clase reutilizable.
 
-CreateHighPriorityTask: crea una tarea con vencimiento de 1 d�a y prioridad alta.
+**Cambios realizados:**
 
-CreateLowPriorityTask: crea una tarea con vencimiento de 7 d�as y prioridad baja.
+* Se creó la clase `TasksFactory` en la carpeta `Factories/`.
 
-CreateCustomTask: permite construir una tarea con par�metros personalizados.
+* Se implementaron los métodos:
 
-Se crearon los endpoints POST /api/tasks/customizable-task, /api/tasks/high-priority, /api/tasks/low-priority  que usa la f�brica para construir tareas de diferente tipos.
+  * `CreateHighPriorityTask`: crea una tarea con vencimiento de 1 día y prioridad alta.
+  * `CreateLowPriorityTask`: crea una tarea con vencimiento de 7 días y prioridad baja.
+  * `CreateCustomTask`: permite construir una tarea con parámetros personalizados.
 
-Esta implementaci�n mejora la modularidad y escalabilidad de la API, permitiendo agregar f�cilmente nuevos tipos de tareas sin duplicar l�gica en el controlador.
+* Se crearon los endpoints:
 
-##  Etapa 4: Programaci�n Reactiva con Rx.NET y Cola Secuencial
+  * `POST /api/tasks/customizable-task`
+  * `POST /api/tasks/high-priority`
+  * `POST /api/tasks/low-priority`
 
-En esta etapa se implement� una **cola FIFO** utilizando `Queue<T>` y `Rx.NET` para procesar tareas de forma secuencial, asegurando que **solo una tarea se procese a la vez** y que la siguiente espere hasta que la anterior est� completada.
+Esta implementación mejora la modularidad y escalabilidad de la API, permitiendo agregar fácilmente nuevos tipos de tareas sin duplicar lógica en el controlador.
 
-###  Cambios realizados:
+---
 
-- Se cre� la clase `TaskQueueHandler` como `Singleton`.
-- Se implement� una cola (`ConcurrentQueue<TodoTask<string>>`) para almacenar tareas en espera.
-- Se utiliz� `Observable.Start()` de Rx.NET para simular el procesamiento as�ncrono de cada tarea.
-- El procesamiento de cada tarea incluye:
-  - Estado inicial `"Pending"`
-  - Simulaci�n de ejecuci�n con `await Task.Delay(...)`
-  - Estado final `"Completed"`
-- Las tareas se procesan en el mismo orden en que fueron agregadas (First In, First Out).
+## Etapa 4: Programación Reactiva con Rx.NET y Cola Secuencial
 
-### Consideraciones t�cnicas:
+Se implementó una **cola FIFO** utilizando `Queue<T>` y `Rx.NET` para procesar tareas de forma secuencial, asegurando que **solo una tarea se procese a la vez** y que la siguiente espere hasta que la anterior esté completada.
 
-- `TaskQueueHandler` se registr� como `Singleton` para mantener una cola global.
-- El repositorio (`TaskRepository`) tambi�n se registr� como `Singleton` para conservar el estado de las tareas en memoria entre requests.
-- El servicio (`TaskService`) se mantiene como `Scoped`.
+### Cambios realizados:
 
-### C�mo probarlo:
+* Se creó la clase `TaskQueueHandler` como `Singleton`.
+* Se implementó una cola (`ConcurrentQueue<TodoTask<string>>`) para almacenar tareas en espera.
+* Se utilizó `Observable.Start()` de Rx.NET para simular el procesamiento asíncrono de cada tarea.
+* El procesamiento de cada tarea incluye:
 
-1. Realiza m�ltiples llamadas `POST` para crear tareas.
-2. Cada tarea ser� encolada y procesada una por una.
-3. En consola se mostrar�:
+  * Estado inicial `"Pending"`
+  * Simulación de ejecución con `await Task.Delay(...)`
+  * Estado final `"Completed"`
 
-	Procesando tarea: Tarea 1
-	Completada: Tarea 1
-	Procesando tarea: Tarea 2
-	Completada: Tarea 2
+### Consideraciones técnicas:
 
-##   Etapa 5 - Optimizaci�n con Memoization
+* `TaskQueueHandler` se registró como `Singleton` para mantener una cola global.
+* El repositorio (`TaskRepository`) también se registró como `Singleton` para conservar el estado de las tareas en memoria entre requests.
+* El servicio (`TaskService`) se mantiene como `Scoped`.
 
-En esta etapa se implement� la t�cnica de memoization (memorizaci�n) para optimizar funciones repetitivas y costosas dentro de la API, con el objetivo de mejorar el rendimiento general y evitar c�lculos innecesarios.
+### Cómo probarlo:
 
-Funcionalidad implementada:
+1. Realiza múltiples llamadas `POST` para crear tareas.
+2. Cada tarea será encolada y procesada una por una.
+3. En consola se mostrará:
 
-	- Se cre� una funci�n pura para calcular el porcentaje de tareas completadas.
+```
+Procesando tarea: Tarea 1
+Completada: Tarea 1
+Procesando tarea: Tarea 2
+Completada: Tarea 2
+```
 
-	- Se utiliz� un Dictionary<string, double> como cach� para almacenar los resultados de esos c�lculos.
+---
 
-	- Se encapsul� esta l�gica en una clase est�tica MemoizationHelper.
+## Etapa 5 - Optimización con Memoization
 
-	- Se gener� una clave �nica (key) para cada conjunto de entradas, y si ya exist�a en cach�, se devolvi� el valor almacenado.
+En esta etapa se implementó la técnica de memoization (memorización) para optimizar funciones repetitivas y costosas dentro de la API, con el objetivo de mejorar el rendimiento general y evitar cálculos innecesarios.
 
+**Funcionalidad implementada:**
 
-Archivos clave: 
+* Se creó una función pura para calcular el porcentaje de tareas completadas.
+* Se utilizó un `Dictionary<string, double>` como caché para almacenar los resultados de esos cálculos.
+* Se encapsuló esta lógica en una clase estática `MemoizationHelper`.
+* Se generó una clave única (key) para cada conjunto de entradas, y si ya existía en caché, se devolvió el valor almacenado.
 
-	- Helpers/MemoizationHelper.cs: gestiona la cach� de resultados.
+**Archivos clave:**
 
-	- Controller/TaskController.cs: utiliza memoization con MemoizationHelper.CalculateCompletionPercentage(completedTasks, totalTasks);
+* `Helpers/MemoizationHelper.cs`: gestiona la caché de resultados.
+* `Controller/TaskController.cs`: utiliza memoization con `MemoizationHelper.CalculateCompletionPercentage(completedTasks, totalTasks);`
 
+---
 
-## Etapa 6 � Autenticaci�n y Autorizaci�n con JWT
+## Etapa 6 – Autenticación y Autorización con JWT
 
-Objetivo
+**Objetivo:**
+Implementar un sistema de autenticación basado en JSON Web Tokens (JWT) para controlar el acceso a los recursos de la API.
 
-Implementar un sistema de autenticaci�n basado en JSON Web Tokens (JWT) para controlar el acceso a los recursos de la API. Este mecanismo permite validar la identidad del usuario y aplicar control de acceso por roles, sin almacenar sesiones en el servidor.
+**Cambios implementados:**
 
-Cambios implementados: 
+1. **Entidades y DTOs**
 
-	-  1. Entidades y DTOs
+   * `User`, `LoginUserDTO`, `RegisterUserDTO`.
 
-		User: nueva entidad con Id, Username, Password, Role, CreatedAt, UpdatedAt.
+2. **Repositorio de usuarios**
 
-		LogUserDTO: para login (email y password).
+   * Interfaz `IUserRepository`.
+   * Implementación en memoria con `ConcurrentDictionary`.
 
-		RegisterUserDTO: para registrar usuarios.
+3. **Servicio de autenticación (`AuthService`)**
 
-	- 2. Repositorio de usuarios
+   * `RegisterAsync`: valida y registra nuevos usuarios.
+   * `AuthenticateAsync`: valida credenciales y genera JWT.
 
-		IUserRepository: interfaz para gestionar usuarios.
+4. **JWT**
 
-		IUserRepository: implementaci�n en memoria (ConcurrentDictionary con ID autoincrementable).
+   * Contiene `email`, `jti`.
+   * Firmado con HMAC-SHA256.
 
-	- 3. Servicio de autenticaci�n (AuthService)
+5. **Controlador `AuthController`**
 
-		M�todo RegisterAsync: valida y registra nuevos usuarios.
+   * `POST /api/auth/register`
+   * `POST /api/auth/login`
 
-		M�todo AuthenticateAsync: valida credenciales, genera y firma un JWT.
+6. **Seguridad en la API**
 
-		El JWT incluye: email y Jti (ID �nico por token).
+   * `AddAuthentication` y `AddAuthorization`
+   * Endpoints protegidos con `[Authorize]`
+   * Validación automática de tokens en los requests
 
-		Firma con clave secreta usando HMAC-SHA256.
+**Resultado:**
+La API ahora está protegida con un sistema JWT funcional que:
 
-	4. Controlador AuthController
+* Genera tokens únicos por sesión.
+* Controla el acceso a endpoints.
+* No requiere almacenamiento de sesión.
 
-		POST /api/auth/register: permite registrar un nuevo usuario.
+---
 
-		POST /api/auth/login: valida credenciales y retorna un token JWT.
+## Etapa 7 – Configuración de SignalR
 
-	5. Seguridad en la API
-		Middleware configurado con AddAuthentication y AddAuthorization.
+**Objetivo:**
+Establecer infraestructura para comunicación en tiempo real mediante SignalR.
 
-	Tokens protegidos mediante Authorization: Bearer <token>.
+**Cambios implementados:**
 
-	Endpoints protegidos con [Authorize].
+1. Se agregó `Microsoft.AspNetCore.SignalR`.
+2. Se registró SignalR con `builder.Services.AddSignalR()`.
+3. Se creó el `TasksHub`.
+4. Se notifican los clientes con:
 
-Flujo de autenticaci�n
+```csharp
+await _hubContext.Clients.All.SendAsync("TaskCreated", newTask);
+```
 
-	El cliente se registra con /api/auth/register.
+5. Se desarrolló un cliente de consola para pruebas (no productivo).
 
-	Luego inicia sesi�n con /api/auth/login y recibe un token.
+**Flujo de comunicación:**
 
-	El cliente env�a el token en cada request (Authorization: Bearer).
+* El cliente se conecta al `/taskHub`.
+* Cuando se crea una tarea, el servidor emite `TaskCreated`.
+* Los clientes reciben el evento automáticamente.
 
-	La API valida el token autom�ticamente antes de procesar la solicitud.
+**Resultado esperado:**
 
-## Resultado
-La API ahora est� protegida con un sistema JWT funcional que:
+* Comunicación en tiempo real sin polling.
+* Estructura lista para eventos como `TaskUpdated`, `TaskDeleted`.
 
-Genera tokens �nicos por sesi�n.
+---
 
-Controla el acceso a endpoints por autenticaci�n y rol.
+## Etapa 8 – Pruebas Unitarias con xUnit
 
-No requiere almacenamiento de sesi�n en el servidor.
+Se implementaron pruebas unitarias para validar funcionalidades críticas usando xUnit y Moq.
 
- ## Etapa 7 – Configuración de SignalR
+### Objetivos
 
-	Objetivo
-
-		Establecer la infraestructura base para comunicación en tiempo real mediante SignalR, permitiendo que el servidor notifique automáticamente a todos los clientes conectados cuando se cree una nueva tarea, sin necesidad de que los clientes realicen peticiones repetitivas o recarguen la página.
-
-	Cambios implementados
-	
-		1. Instalación y configuración de SignalR
-		Se agregó el paquete Microsoft.AspNetCore.SignalR.
-
-		Se registró el servicio con builder.Services.AddSignalR().
-
-		2. Creación del Hub
-		Se creó la clase TasksHub, heredando de Hub.
-
-		Se configuró el endpoint /taskHub en Program.cs con:
-
-		app.MapHub<TasksHub>("/taskHub");
-		
-		3. Emisión del evento al crear una tarea
-		En el servicio TaskService, luego de registrar la nueva tarea, se emite el evento:
-
-		await _hubContext.Clients.All.SendAsync("TaskCreated", newTask);
-		Esto notifica a todos los clientes conectados que una nueva tarea fue creada.
-
-		4. Cliente de prueba
-
-		Se desarrolló un cliente SignalR en consola .NET que se conecta a /taskHub y escucha el evento TaskCreated, este fue agregado a la carpeta de /Documentacion con el fin de mostrar como se realiza la conexion y no para ser utilizado en produccion PD: El cliente fue testeado en un proyecto aparte.
-
-		El cliente ejecuta una acción automática cuando recibe la notificación, como mostrar la tarea por consola.
-
-
-	Flujo de comunicación
-
-		El cliente se conecta al hub /taskHub usando SignalR.
-
-		Cuando se llama al endpoint POST /api/tasks, el servidor:
-
-		Crea la nueva tarea.
-
-		Notifica a todos los clientes vía Clients.All.SendAsync("TaskCreated", response).
-
-		Los clientes reciben el evento TaskCreated con la tarea nueva y reaccionan en tiempo real.
-
-	Resultado esperado
-
-		Los clientes conectados son notificados instantáneamente de nuevas tareas.
-
-		No necesitan hacer polling ni refrescar la vista.
-
-		La estructura está lista para extenderse con otros eventos (TaskUpdated, TaskDeleted, etc.).
-
-##  Etapa 8 – Pruebas Unitarias con xUnit
-
-En esta etapa se implementaron pruebas unitarias para validar la funcionalidad crítica de la API de Gestión de Tareas desarrollada en .NET. Se utilizó el framework **xUnit** junto con **Moq** para simular dependencias como repositorios, servicios y SignalR Hubs.
-
-###  Objetivos
-
-- Validar el comportamiento de los servicios de autenticación, tareas y procesamiento en cola.
-- Verificar la respuesta del controlador ante peticiones válidas.
-- Asegurar que las funciones puras y helpers se comporten correctamente en múltiples escenarios.
-- Simular flujos reales sin necesidad de base de datos.
+* Validar servicios de autenticación, tareas y cola.
+* Verificar controladores.
+* Evaluar funciones puras.
+* Simular datos sin base de datos real.
 
 ### Cobertura de pruebas
 
-| Archivo                          | Casos principales                                                              |
-|----------------------------------|--------------------------------------------------------------------------------|
-| `AuthServicesTests.cs`          | Inicio de sesión, manejo de credenciales inválidas, registro de usuario       |
-| `TaskServiceTests.cs`           | Creación y actualización de tareas                                            |
-| `TaskQueueHanlderServiceTest.cs`| Encolado y procesamiento de tareas en background                              |
-| `MemoizationHelperTests.cs`     | Cálculo del porcentaje de tareas completadas con memoización                  |
-| `TasksControllersTests.cs`      | Respuesta del controlador al obtener una tarea por ID                         |
+| Archivo                        | Casos principales                                     |
+| ------------------------------ | ----------------------------------------------------- |
+| AuthServicesTests.cs           | Inicio de sesión, credenciales inválidas, registro    |
+| TaskServiceTests.cs            | Creación y actualización de tareas                    |
+| TaskQueueHanlderServiceTest.cs | Encolado y procesamiento de tareas en background      |
+| MemoizationHelperTests.cs      | Cálculo y cacheo del porcentaje de tareas completadas |
+| TasksControllersTests.cs       | Obtener tarea por ID desde el controlador             |
 
-###  Herramientas usadas
+### Herramientas utilizadas
 
-- [xUnit](https://xunit.net/)
-- [Moq](https://github.com/moq/moq4)
-- .NET 6 SDK o superior
-
-
-
-
-
-
-
-
+* xUnit
+* Moq
+* .NET 6 o superior
 
