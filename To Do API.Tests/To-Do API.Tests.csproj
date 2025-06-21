@@ -30,8 +30,4 @@
     <ProjectReference Include="..\To-Do API\To-Do API.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
 </Project>

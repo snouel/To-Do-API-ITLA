@@ -51,8 +51,8 @@ namespace To_Do_API.Application.Services
 
                 var token = new JwtSecurityToken
                     (
-                    issuer: _config["Jwt:Issuer"],
-                    audience: _config["Jwt:Audience"],
+                    issuer: _jwtSettings.Issuer,
+                    audience: _jwtSettings.Audience,
                     claims: claims,
                     expires: DateTime.Now.AddHours(1),
                     signingCredentials: creds

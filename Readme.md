@@ -232,6 +232,36 @@ No requiere almacenamiento de sesi�n en el servidor.
 
 		La estructura está lista para extenderse con otros eventos (TaskUpdated, TaskDeleted, etc.).
 
+##  Etapa 8 – Pruebas Unitarias con xUnit
+
+En esta etapa se implementaron pruebas unitarias para validar la funcionalidad crítica de la API de Gestión de Tareas desarrollada en .NET. Se utilizó el framework **xUnit** junto con **Moq** para simular dependencias como repositorios, servicios y SignalR Hubs.
+
+###  Objetivos
+
+- Validar el comportamiento de los servicios de autenticación, tareas y procesamiento en cola.
+- Verificar la respuesta del controlador ante peticiones válidas.
+- Asegurar que las funciones puras y helpers se comporten correctamente en múltiples escenarios.
+- Simular flujos reales sin necesidad de base de datos.
+
+### Cobertura de pruebas
+
+| Archivo                          | Casos principales                                                              |
+|----------------------------------|--------------------------------------------------------------------------------|
+| `AuthServicesTests.cs`          | Inicio de sesión, manejo de credenciales inválidas, registro de usuario       |
+| `TaskServiceTests.cs`           | Creación y actualización de tareas                                            |
+| `TaskQueueHanlderServiceTest.cs`| Encolado y procesamiento de tareas en background                              |
+| `MemoizationHelperTests.cs`     | Cálculo del porcentaje de tareas completadas con memoización                  |
+| `TasksControllersTests.cs`      | Respuesta del controlador al obtener una tarea por ID                         |
+
+###  Herramientas usadas
+
+- [xUnit](https://xunit.net/)
+- [Moq](https://github.com/moq/moq4)
+- .NET 6 SDK o superior
+
+
+
+
 
 
 

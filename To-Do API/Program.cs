@@ -21,15 +21,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton(typeof(ITaskRepository), typeof (TaskRepository)); //Al trabajar con datos en memoria no iniciara una nueva instancia.
-builder.Services.AddScoped(typeof(ITaskService), typeof(TaskService));
+builder.Services.AddSingleton(typeof(ITaskService), typeof(TaskService));
 builder.Services.AddSingleton<TaskQueueHandler>();
 builder.Services.AddSingleton(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSignalR();
 
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
-
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -40,9 +42,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
              ValidateAudience = true,
              ValidateLifetime = true,
              ValidateIssuerSigningKey = true,
-             ValidIssuer = builder.Configuration["Jwt:Issuer"],
-             ValidAudience = builder.Configuration["Jwt:Audience"],
-             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+             ValidIssuer = jwtSettings.Issuer,
+             ValidAudience = jwtSettings.Audience,
+             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
          };
      }
     );
