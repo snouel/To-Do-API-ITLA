@@ -26,7 +26,7 @@ namespace To_Do_API.Insfraestructure.Repositories
             return Task.FromResult(result);
         }
 
-        public Task<User?> GetUserByIdAsync(string email)
+        public Task<User?> GetUserByEmailAsync(string email)
         {
             _users.TryGetValue(email, out var user);
             return Task.FromResult(user);

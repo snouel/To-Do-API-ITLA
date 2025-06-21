@@ -14,12 +14,13 @@ namespace To_Do_API.Application.Services
     {
         private readonly ConcurrentQueue<TodoTask<string>> _taskQueueHandler = new();
         private bool _isProcessing = false;
-        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ITaskService _taskService;
 
-        public TaskQueueHandler(IServiceScopeFactory scopeFactory)
+        public TaskQueueHandler(ITaskService taskService)
         {
-            _scopeFactory = scopeFactory;
+            _taskService = taskService;
         }
+
         public void Enqueue(TodoTask<string> task)
         {
             task.Status = "Pending";
@@ -40,11 +41,7 @@ namespace To_Do_API.Application.Services
                     if (_taskQueueHandler.TryDequeue(out var currentTask))
                     {
                         Console.WriteLine($"Procesando tarea: {currentTask.Description}");
-
-                        using (var scope = _scopeFactory.CreateScope())
-                        {
-                            var taskService = scope.ServiceProvider.GetRequiredService<ITaskService>();
-                            await taskService.CreateAsync(currentTask);
+                        await _taskService.CreateAsync(currentTask);
 
                             // Notify the creation
                             TaskDelegates.NotifyCreation(currentTask);
@@ -52,7 +49,7 @@ namespace To_Do_API.Application.Services
                             // Calculate the days left
                             var daysLeft = TaskDelegates.CalculateDayLeft(currentTask);
                             Console.WriteLine($"Dias restantes: {daysLeft}");
-                        }
+                        
 
                         currentTask.Status = "Completed";
                         Console.WriteLine($"Completada: {currentTask.Description}");
